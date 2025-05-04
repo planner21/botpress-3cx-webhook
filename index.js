@@ -1,27 +1,16 @@
 const express = require("express");
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
-
-app.post("/webhook", (req, res) => {
-  console.log("پیام از Botpress:", req.body);
-  res.sendStatus(200);
-});
-
-app.get("/", (req, res) => {
-  res.send("Botpress Webhook Active");
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-const express = require("express");
 const axios = require("axios");
 const app = express();
 const PORT = process.env.PORT || 10000;
 
 app.use(express.json());
+
+// Webhook برای دریافت پیام از Botpress
+app.post("/webhook", (req, res) => {
+  console.log("📥 پیام از Botpress:", req.body);
+  // اینجا می‌تونی پیام رو به 3CX ارسال کنی یا در سیستم لاگ کنی
+  res.sendStatus(200);
+});
 
 // دریافت پیام از 3CX و ارسال به Botpress Cloud
 app.post("/from-3cx", async (req, res) => {
@@ -43,12 +32,15 @@ app.post("/from-3cx", async (req, res) => {
   }
 });
 
+// دریافت پیام از Botpress و ارسال به 3CX
 app.post("/3cx-webhook", (req, res) => {
-  console.log("📥 پیام از Botpress برای 3CX:", req.body);
-  // اینجا می‌تونی پیام رو به 3CX ارسال کنی یا در سیستم لاگ کنی
-  res.sendStatus(200);
-});
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+  const { message } = req.body;
+  console.log("📤 پیام از Botpress برای 3CX:", message);
+  
+  // اینجا باید کدی بنویسی که پیام رو به 3CX بفرستی
+  // مثلاً با استفاده از API 3CX یا Webhook مخصوص
+  // در اینجا فرض می‌کنیم که 3CX یک Webhook دریافت می‌کنه
+  axios.post("https://3cx-webhook-url", {
+    message: message
+  }).then(() => {
+    console.log("✅ پیام به 3
