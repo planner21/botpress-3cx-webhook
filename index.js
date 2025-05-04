@@ -8,7 +8,6 @@ app.use(express.json());
 // Webhook برای دریافت پیام از Botpress
 app.post("/webhook", (req, res) => {
   console.log("📥 پیام از Botpress:", req.body);
-  // اینجا می‌تونی پیام رو به 3CX ارسال کنی یا در سیستم لاگ کنی
   res.sendStatus(200);
 });
 
@@ -37,10 +36,18 @@ app.post("/3cx-webhook", (req, res) => {
   const { message } = req.body;
   console.log("📤 پیام از Botpress برای 3CX:", message);
   
-  // اینجا باید کدی بنویسی که پیام رو به 3CX بفرستی
-  // مثلاً با استفاده از API 3CX یا Webhook مخصوص
-  // در اینجا فرض می‌کنیم که 3CX یک Webhook دریافت می‌کنه
-  axios.post("https://3cx-webhook-url", {
+  // ارسال پیام به Webhook 3CX
+  axios.post("https://botpress-3cx-webhook.onrender.com/3cx-webhook", {
     message: message
   }).then(() => {
-    console.log("✅ پیام به 3
+    console.log("✅ پیام به 3CX ارسال شد");
+    res.sendStatus(200);
+  }).catch((err) => {
+    console.error("❌ خطا در ارسال به 3CX:", err.message);
+    res.sendStatus(500);
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
